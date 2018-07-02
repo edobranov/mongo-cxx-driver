@@ -35,6 +35,19 @@ class client::impl {
 
     mongoc_client_t* client_t;
     std::list<bsoncxx::string::view_or_value> ssl_options;
+
+    // This is passed to the callbacks struct and then passed to the C driver using
+    // mongoc_apm_set_command_started_cb() in mongocxx/client.cpp
+    static void command_started_wrapper(const mongoc_apm_command_started_t* event) {
+        std::cerr << "In command_started_wrapper function" << std::endl;
+
+        // TODO: Fields from mongoc_apm_command_started_t *event should be copied into _event
+        command_started_event _event;
+
+        // Call user's overloaded function
+        auto context = (command_listener*)mongoc_apm_command_started_get_context(event);
+        context->command_started(_event);
+    }
 };
 
 MONGOCXX_INLINE_NAMESPACE_END

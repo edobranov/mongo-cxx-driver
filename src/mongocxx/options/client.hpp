@@ -17,6 +17,7 @@
 #include <string>
 
 #include <bsoncxx/stdx/optional.hpp>
+#include <mongocxx/apm/command_listener.hpp>
 #include <mongocxx/options/ssl.hpp>
 
 #include <mongocxx/config/prelude.hpp>
@@ -51,8 +52,28 @@ class MONGOCXX_API client {
     ///
     const stdx::optional<ssl>& ssl_opts() const;
 
+    ///
+    /// Sets the command-listening-related options.
+    ///
+    /// @param cl_opts
+    ///   The APM (application performance monitoring) related options.
+    ///
+    /// @return
+    ///   A reference to the object on which this member function is being called.  This facilitates
+    ///   method chaining.
+    ///
+    client& command_listener_opts(command_listener* cl_opts);
+
+    ///
+    /// The current command-listening class options.
+    ///
+    /// @return The command-listening class options.
+    ///
+    const stdx::optional<command_listener*>& command_listener_opts() const;
+
    private:
     stdx::optional<ssl> _ssl_opts;
+    stdx::optional<command_listener*> _cl_callbacks;
 
     friend MONGOCXX_API bool MONGOCXX_CALL operator==(const client&, const client&);
     friend MONGOCXX_API bool MONGOCXX_CALL operator!=(const client&, const client&);

@@ -29,12 +29,23 @@ const stdx::optional<ssl>& client::ssl_opts() const {
     return _ssl_opts;
 }
 
+// TODO: change equality behavior
 bool MONGOCXX_CALL operator==(const client& lhs, const client& rhs) {
     return lhs.ssl_opts() == rhs.ssl_opts();
 }
 bool MONGOCXX_CALL operator!=(const client& lhs, const client& rhs) {
     return !(lhs == rhs);
 }
+
+client& client::command_listener_opts(command_listener* cl_opts) {
+    _cl_callbacks = cl_opts;
+    return *this;
+}
+
+const stdx::optional<command_listener*>& client::command_listener_opts() const {
+    return _cl_callbacks;
+}
+
 }  // namespace options
 MONGOCXX_INLINE_NAMESPACE_END
 }  // namespace mongocxx
