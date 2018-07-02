@@ -15,6 +15,7 @@
 #include <mongocxx/client.hpp>
 
 #include <bsoncxx/stdx/make_unique.hpp>
+#include <mongocxx/apm/command_listener.hpp>
 #include <mongocxx/exception/error_code.hpp>
 #include <mongocxx/exception/logic_error.hpp>
 #include <mongocxx/exception/operation_exception.hpp>
@@ -57,6 +58,10 @@ client::client(const class uri& uri, const options::client& options) {
     if (!new_client) {
         // Shouldn't happen after checks above, but future libmongoc's may change behavior.
         throw exception{error_code::k_invalid_parameter, "could not construct client from URI"};
+    }
+
+    if (options.context()) {
+        mongoc_client_set_apm_callbacks(new_client, options.callbacks(), options.context());
     }
 
     _impl = stdx::make_unique<impl>(std::move(new_client));

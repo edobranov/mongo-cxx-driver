@@ -35,6 +35,7 @@ bool MONGOCXX_CALL operator==(const client& lhs, const client& rhs) {
 bool MONGOCXX_CALL operator!=(const client& lhs, const client& rhs) {
     return !(lhs == rhs);
 }
+
 }  // namespace options
 MONGOCXX_INLINE_NAMESPACE_END
 }  // namespace mongocxx

@@ -573,4 +573,42 @@ TEST_CASE("Database integration tests", "[database]") {
         REQUIRE(expected_colls.size() == 0);
     }
 }
+
+TEST_CASE("APM Test", "[database]") {
+    instance::current();
+
+    client mongo_client{uri{}};
+    stdx::string_view database_name{"database"};
+    database database = mongo_client[database_name];
+
+    class my_command_listener : public default_listener_policy {
+       public:
+        void command_started(const mongocxx::command_started_event& event) {
+            // std::cerr << "Command:       " << bsoncxx::to_json(event.command) << std::endl;
+            // std::cerr << "Database name: " << event.database_name << std::endl;
+            // std::cerr << "Command name:  " << event.command_name << std::endl;
+            // std::cerr << "Request ID:    " << event.request_id << std::endl;
+            // std::cerr << "Operation ID:  " << event.operation_id << std::endl;
+            // std::cerr << "Host:          " << event.host << std::endl;
+            // std::cerr << "Port:          " << event.port << std::endl;
+
+            (void)bsoncxx::to_json(event.command);
+            (void)event.database_name;
+            (void)event.command_name;
+            (void)event.request_id;
+            (void)event.operation_id;
+            (void)event.host;
+            (void)event.port;
+        }
+    };
+
+    my_command_listener my_cl;
+    mongocxx::options::client client_options;
+    client_options.command_listener(my_cl);
+
+    client x{uri{}, client_options};
+    auto db = x["test"];
+    bsoncxx::document::value doc = make_document(kvp("x", 1));
+    db["test"].insert_one(std::move(doc));
+}
 }  // namespace

@@ -48,6 +48,7 @@ endif()
 add_subdirectory(config)
 
 set(mongocxx_sources
+    apm/command_listener.cpp
     bulk_write.cpp
     client.cpp
     client_session.cpp
