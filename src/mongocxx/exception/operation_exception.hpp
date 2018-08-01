@@ -16,6 +16,7 @@
 
 #include <bsoncxx/document/value.hpp>
 #include <bsoncxx/stdx/optional.hpp>
+#include <bsoncxx/string/view_or_value.hpp>
 #include <mongocxx/exception/exception.hpp>
 #include <mongocxx/stdx.hpp>
 
@@ -60,6 +61,16 @@ class MONGOCXX_API operation_exception : public exception {
     ///
     /// @}
     ///
+
+    ///
+    /// Checks for the specified label in a operation exception.
+    ///
+    /// @param label
+    ///   A string of the label to search for
+    ///
+    /// @returns True if the label is found in the operation exception, and false otherwise.
+    ///
+    bool has_error_label(bsoncxx::string::view_or_value label) const;
 
    private:
     stdx::optional<bsoncxx::document::value> _raw_server_error;
